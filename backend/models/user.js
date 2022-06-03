@@ -4,19 +4,38 @@ const db = require("../db");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 class User {
-  static async login(credentials) {
-    throw new UnauthorizedError("Invalid email/password combo");
-  }
-  static async register(credentials) {
-    if (!credentials) {
+  static checkArgFields(arg, fields) {
+    if (!arg) {
       throw new BadRequestError(`Missing a request body`);
     }
-    const requiredFields = ["email", "password", "firstname", "lastname"];
-    requiredFields.forEach((field) => {
-      if (!credentials.hasOwnProperty(field)) {
+    fields.forEach((field) => {
+      if (!arg.hasOwnProperty(field)) {
         throw new BadRequestError(`Missing ${field} in request body`);
       }
     });
+  }
+
+  static async hash(pw) {
+    const hashedPassword = await bcrypt.hash(pw, BCRYPT_WORK_FACTOR);
+    return hashedPassword;
+  }
+
+  static async login(credentials) {
+    const requiredFields = ["email", "password"];
+    User.checkArgFields(credentials, requiredFields);
+    const user = await User.fetchUserByEmail(credentials.email);
+    if (user) {
+      const valid = await bcrypt.compare(credentials.password, user.password);
+      if (valid) {
+        return user;
+      }
+    }
+    throw new UnauthorizedError("Invalid email/password combo");
+  }
+  static async register(credentials) {
+    const requiredFields = ["email", "password", "firstname", "lastname"];
+    User.checkArgFields(credentials, requiredFields);
+
     if (credentials.email.indexOf("@") <= 0) {
       throw new BadRequestError(`Invalid email`);
     }
@@ -26,10 +45,7 @@ class User {
       throw new BadRequestError(`Duplicate email: ${credentials.email}`);
     }
 
-    const hashedPassword = await bcrypt.hash(
-      credentials.password,
-      BCRYPT_WORK_FACTOR
-    );
+    const hashedPassword = await User.hash(credentials.password);
     const lowerCaseEmail = credentials.email.toLowerCase();
 
     const q = `
