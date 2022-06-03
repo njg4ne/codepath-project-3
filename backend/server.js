@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const colors = require("colors");
-const NotFoundError = require("./utils/errors");
+const { NotFoundError } = require("./utils/errors");
 const { PORT } = require("./config");
 const security = require("./routes/auth");
 
