@@ -3,6 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const colors = require("colors");
 const NotFoundError = require("./utils/errors");
+const { PORT } = require("./config");
 
 const app = express();
 // Cross origin resource sharing
@@ -23,6 +24,5 @@ app.use((err, req, res, next) => {
     error: { message, status },
   });
 });
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`.green));
