@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const colors = require("colors");
 const NotFoundError = require("./utils/errors");
 const { PORT } = require("./config");
+const security = require("./routes/auth");
 
 const app = express();
 // Cross origin resource sharing
@@ -12,6 +13,9 @@ app.use(cors());
 app.use(express.json());
 // Logging
 app.use(morgan("tiny"));
+
+app.use("/auth", security);
+
 // Fallback Error Type
 app.use((req, res, next) => {
   return next(new NotFoundError());
