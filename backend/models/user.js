@@ -1,5 +1,7 @@
+const bcrypt = require("bcrypt");
 const { UnauthorizedError, BadRequestError } = require("../utils/errors");
 const db = require("../db");
+const { BCRYPT_WORK_FACTOR } = require("../config");
 
 class User {
   static async login(credentials) {
@@ -24,6 +26,10 @@ class User {
       throw new BadRequestError(`Duplicate email: ${credentials.email}`);
     }
 
+    const hashedPassword = await bcrypt.hash(
+      credentials.password,
+      BCRYPT_WORK_FACTOR
+    );
     const lowerCaseEmail = credentials.email.toLowerCase();
 
     const q = `
@@ -45,6 +51,7 @@ class User {
     let fields = requiredFields.map((f) => credentials[f]);
 
     fields[0] = lowerCaseEmail;
+    fields[1] = hashedPassword;
     const result = await db.query(q, fields);
     return result.rows[0];
   }
