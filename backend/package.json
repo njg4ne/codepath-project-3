@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "psql -h db -f app-storage.sql; nodemon server.js"
   },
   "author": "Nicholas Gardella",
   "license": "GPL-3.0",

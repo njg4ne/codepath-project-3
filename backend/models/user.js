@@ -4,6 +4,12 @@ const db = require("../db");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 class User {
+  static makePublicUser(user) {
+    return {
+      email: user.email,
+      name: `${user.lastname}, ${user.firstname}`,
+    };
+  }
   static checkArgFields(arg, fields) {
     if (!arg) {
       throw new BadRequestError(`Missing a request body`);
@@ -27,7 +33,7 @@ class User {
     if (user) {
       const valid = await bcrypt.compare(credentials.password, user.password);
       if (valid) {
-        return user;
+        return User.makePublicUser(user);
       }
     }
     throw new UnauthorizedError("Invalid email/password combo");
