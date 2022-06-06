@@ -18,6 +18,7 @@ app.use(morgan("tiny"));
 app.use(security.setJwt);
 
 app.use("/auth", auth);
+// app.use("")
 
 // Fallback Error Type
 app.use((req, res, next) => {
