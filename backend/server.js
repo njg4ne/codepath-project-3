@@ -4,7 +4,8 @@ const morgan = require("morgan");
 const colors = require("colors");
 const { NotFoundError } = require("./utils/errors");
 const { PORT } = require("./config");
-const security = require("./routes/auth");
+const auth = require("./routes/auth");
+const security = require("./middleware/security");
 
 const app = express();
 // Cross origin resource sharing
@@ -14,7 +15,9 @@ app.use(express.json());
 // Logging
 app.use(morgan("tiny"));
 
-app.use("/auth", security);
+app.use(security.setJwt);
+
+app.use("/auth", auth);
 
 // Fallback Error Type
 app.use((req, res, next) => {
