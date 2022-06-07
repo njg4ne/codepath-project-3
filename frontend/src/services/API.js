@@ -2,11 +2,12 @@ import axios from "axios";
 
 class API {
   constructor(url) {
+    // console.log("API Client Restarts");
     this.url = url;
-    this.token = null;
   }
   setToken(token) {
     this.token = token;
+    // console.log(this.token);
   }
   async request({ endpoint, method = "GET", data = {} }) {
     const fqUrl = `${this.url}/${endpoint}`;
@@ -35,6 +36,12 @@ class API {
       return { data: null, error: errorMsg || String(error) };
     }
   }
+  async getLocalUser(tok) {
+    this.setToken(tok);
+    const method = "GET";
+    const endpoint = "auth/me";
+    return await this.request({ endpoint, method });
+  }
   async auth(credentials, endpoint) {
     const method = "POST";
     const data = credentials;
@@ -45,6 +52,22 @@ class API {
   }
   async register(credentials) {
     return await this.auth(credentials, "auth/register");
+  }
+  async logSleep(entry) {
+    // console.log(this.token);
+    const method = "POST";
+    const endpoint = "sleep";
+    return await this.request({ endpoint, method, data: entry });
+  }
+  async getSleep() {
+    const method = "GET";
+    const endpoint = "sleep";
+    return await this.request({ endpoint, method });
+  }
+  async getSleepBefore(date) {
+    const method = "GET";
+    const endpoint = `sleep/before/${JSON.stringify(date)}`;
+    return await this.request({ endpoint, method });
   }
 }
 

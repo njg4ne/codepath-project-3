@@ -3,20 +3,22 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
+import { default as UILink } from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import API from "../../services/API";
-import Copyright from "../Copyright";
-import auth from "./auth";
+import API from "services/API";
+import Copyright from "components/Copyright";
+import auth from "components/Auth/auth";
+import { SettingsInputSvideoRounded } from "@mui/icons-material";
+import { Navigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ setUser, user }) {
   const {
     register,
     handleSubmit,
@@ -44,11 +46,16 @@ export default function Login() {
       d,
       (c) => API.login(c),
       (e) => errMiddleware(e),
-      (o) => alert(JSON.stringify(o))
+      (o) => {
+        setUser(o);
+      }
     );
     // alert(JSON.stringify(res));
     // alert(`Submit: ${JSON.stringify(d)}`);
   });
+  if (user) {
+    return <Navigate replace to="/sleep" />;
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -118,9 +125,9 @@ export default function Login() {
               </Link>
             </Grid> */}
             <Grid item xs>
-              <Link href="/register" variant="body2">
+              <UILink href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
-              </Link>
+              </UILink>
             </Grid>
           </Grid>
         </Box>

@@ -1,23 +1,51 @@
-import logo from "./logo.svg";
-import "./App.css";
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
+// import logo from "logo.svg";
+import "App.css";
+import Login from "components/Auth/Login";
+import Register from "components/Auth/Register";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { StrictMode } from "react";
+import Sleep from "components/Sleep/Sleep";
+import Navbar from "components/Navbar";
+import { useState, useEffect } from "react";
+import API from "services/API";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
 });
 function App() {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    plu();
+  }, []);
+  async function plu() {
+    const tok = localStorage.getItem("life-tracker-jwt");
+    const { data, error } = await API.getLocalUser(tok);
+    if (data) {
+      setUser(data.user);
+      // console.log(data.user);
+    }
+  }
+
   return (
     <StrictMode>
       <ThemeProvider theme={darkTheme}>
         <BrowserRouter>
+          <Navbar user={user} setUser={setUser}></Navbar>
           <Routes>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/register" element={<Register />}></Route>
+            <Route
+              path="/login"
+              element={<Login user={user} setUser={setUser} />}
+            ></Route>
+            <Route
+              path="/register"
+              element={<Register user={user} setUser={setUser} />}
+            ></Route>
+            <Route
+              path="/sleep"
+              element={<Sleep user={user} setUser={setUser} />}
+            ></Route>
             <Route path="/" element={<Navigate replace to="/login" />} />
           </Routes>
         </BrowserRouter>

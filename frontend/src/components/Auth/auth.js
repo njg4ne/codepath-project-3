@@ -1,4 +1,4 @@
-import API from "../../services/API";
+import API from "services/API";
 
 const auth = async (
   creds,
@@ -17,7 +17,9 @@ const auth = async (
     if (setUser) {
       setUser(user);
     }
+    // console.log(data.token);
     API.setToken(data.token);
+    localStorage.setItem("life-tracker-jwt", data.token);
   }
 };
 

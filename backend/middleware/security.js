@@ -29,7 +29,7 @@ const setJwt = (req, res, next) => {
 const enforceJwt = (req, res, next) => {
   try {
     const { user } = res.locals;
-    console.log(user);
+    // console.log(user);
     if (!user?.email) {
       throw new UnauthorizedError();
     }

@@ -5,6 +5,7 @@ const colors = require("colors");
 const { NotFoundError } = require("./utils/errors");
 const { PORT } = require("./config");
 const auth = require("./routes/auth");
+const sleep = require("./routes/sleep");
 const security = require("./middleware/security");
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(morgan("tiny"));
 app.use(security.setJwt);
 
 app.use("/auth", auth);
+app.use("/sleep", sleep);
 // app.use("")
 
 // Fallback Error Type
